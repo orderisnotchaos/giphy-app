@@ -1,25 +1,59 @@
-import logo from './logo.svg';
+import React, {Component} from 'react';
 import './App.css';
+import Navigation from './components/Navigation';
+import Features from './components/Features';
+
+class ClassComponent extends Component {
+
+  constructor(props){
+    super(props);
+    this.state = {
+      gifs : [] 
+    };
+  }
+
+  componentDidMount(){
+
+    fetch("https://api.giphy.com/v1/gifs/trending?api_key=rjk4nho1TWlmCCW79YKOY4faqanCW4NJ")
+    .then((res) =>{
+      return res.json();
+    })
+    .then(data =>{
+
+      let temp = [];
+      for(let d in data.data){
+        temp.push({gif_url:data.data[d].images.downsized.url,gif_name:data.data[d].username });
+      }
+
+      this.setState({
+        gifs: temp
+      })
+    })
+    .catch(
+      e => console.log(e)
+    );
+  }
+
+  render(){
+//    let Features = this.state.children.type;
+
+    return <Features gifs={this.state.gifs}/>;
+  }
+};
+
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+
+        <Navigation />
+        <ClassComponent>
+        <Features />
+        </ClassComponent>
+
     </div>
   );
 }
 
 export default App;
+
